@@ -34,7 +34,6 @@ const DeflectionGraph: React.FC<DeflectionGraphProps> = ({ deflections }) => {
   const [normalized, setNormalized] = useState(false);
 
   useEffect(() => {
-    console.log(deflections);
     const chartData = {
       datasets: deflections.map((deflection, index) => {
         const data = deflection.mass.map((m, i) => {
@@ -53,10 +52,6 @@ const DeflectionGraph: React.FC<DeflectionGraphProps> = ({ deflections }) => {
           order: 2,
           precision: 15,
         });
-        console.log(deflection.title);
-        console.log(result);
-        console.log(regressionData);
-        console.log(data);
         const gradient = result.equation[0];
         const yIntercept = result.equation[1];
 
