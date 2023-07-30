@@ -34,6 +34,12 @@ const DeflectionGraph: React.FC<DeflectionGraphProps> = ({ deflections }) => {
   const [normalized, setNormalized] = useState(false);
 
   useEffect(() => {
+    const xAxis = [] as number[];
+    if (deflections.length > 0) {
+      deflections[0].mass.forEach(x => {
+        xAxis.push(x);
+      });
+    }
     const chartData = {
       datasets: deflections.map((deflection, index) => {
         const data = deflection.mass.map((m, i) => {
@@ -55,26 +61,24 @@ const DeflectionGraph: React.FC<DeflectionGraphProps> = ({ deflections }) => {
         const gradient = result.equation[0];
         const yIntercept = result.equation[1];
 
-        // Create points for the start and end of the line
-        const firstPoint = {
-          x: data[0].x,
-          y: data[0].x * gradient + yIntercept,
-        };
+        const normalizedAxis = Array.from(Array(10).keys()).map(x => {
+          return x / 100;
+        });
 
-        const lastPoint = {
-          x: normalized ? 0.1 : data[data.length - 1].x,
-          y: normalized
-            ? 0.1 * gradient + yIntercept
-            : data[data.length - 1].x * gradient + yIntercept,
-        };
         const backgroundColor = `rgba(${Math.random() * 255}, ${
           Math.random() * 255
         }, ${Math.random() * 255}, 0.5)`;
         return {
           label: `${deflection.title} - ${deflection.nominalPoundage}`,
-          data: [firstPoint, lastPoint],
+          data: normalized
+            ? normalizedAxis.map(x => {
+                return { x, y: x * gradient + yIntercept };
+              })
+            : xAxis.map(x => {
+                return { x, y: x * gradient + yIntercept } as Point;
+              }),
           backgroundColor, // random color
-          pointRadius: 0, // hide points
+          pointRadius: 2, // hide points
           showLine: true, // show line
           borderColor: backgroundColor,
         };
